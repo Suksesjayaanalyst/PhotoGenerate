@@ -48,7 +48,7 @@ if start:
         if selectprice == 'Harga Under':
             colour = "white"
         elif selectprice == 'HargaJualLusin':
-            colour = "(250,225,135)"
+            colour = "(250,225,135, 255)"
         elif selectprice == 'HargaJualSpecial':
             colour = 'green'
         
