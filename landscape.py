@@ -20,19 +20,20 @@ else:
     st.warning("Please upload your Excel file.")
     st.stop()
 
+# Dropdown untuk memilih harga
+selectprice = st.selectbox(
+    "Select", options=['Harga Under', 'HargaJualLusin', 'HargaJualKoli', 'HargaJualSpecial']
+)
+
+# Filter data berdasarkan ItemCode di file pengguna
+selected_df = database[database['ItemCode'].isin(file_user['ItemCode'])]
+
+st.dataframe(selected_df)
+
 start = st.button("Start")
 
 if start:
-    # Dropdown untuk memilih harga
-    selectprice = st.selectbox(
-        "Select", options=['Harga Under', 'HargaJualLusin', 'HargaJualKoli', 'HargaJualSpecial']
-    )
-
-    # Filter data berdasarkan ItemCode di file pengguna
-    selected_df = database[database['ItemCode'].isin(file_user['ItemCode'])]
-
-    st.dataframe(selected_df)
-
+    
     font_path = "./Poppins-Medium.ttf"
     font = ImageFont.truetype(font_path, size=26)
 
