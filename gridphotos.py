@@ -55,59 +55,45 @@ def wrap_text(text, font, max_width):
 
     return lines
 
-# Fungsi untuk menambahkan gambar ke template
+# Fungsi untuk menambahkan gambar ke template (landscape)
 def add_image(img_url, row):
     colour = "white" if selectprice == 'Harga Under' else "orange" if selectprice == 'HargaJualLusin' else "yellow" if selectprice == 'HargaJualKoli' else "green"
-    height = 1085 if row['Kategori'] in ['AKSESORIS RAMBUT KAMINO', 'LOLI & MOLI'] else 1010
-    template = Image.new("RGB", (800, height), colour)
+    height = 600  # Menurunkan tinggi untuk layout landscape
+    width = 1200  # Lebar lebih besar untuk landscape
+    template = Image.new("RGB", (width, height), colour)
 
     draw = ImageDraw.Draw(template)
-    draw.rectangle([0, 0, template.width, template.height // 2], fill="white")
+    draw.rectangle([0, 0, template.width // 2, template.height], fill="white")  # Bagian kanan untuk teks
     
     try:
         response = requests.get(img_url)
         img = Image.open(BytesIO(response.content)).convert("RGBA")
-        img = img.resize((800, 800))
+        img = img.resize((600, 600))  # Sesuaikan ukuran gambar
         
-        if row['Kategori'] in ['AKSESORIS RAMBUT KAMINO', 'LOLI & MOLI']:
-            if row['Kategori'] == 'AKSESORIS RAMBUT KAMINO':
-                logo_width = template.width // 4
-                logo = Image.open("./logo-kamino-for-web-new.png").convert("RGBA")
-                image_y = 60
-            elif row['Kategori'] == 'LOLI & MOLI':
-                logo_width = template.width // 6
-                logo = Image.open("./Lolimoli Logo-02.png").convert("RGBA")
-                image_y = 80
-            
-            logo_resized = logo.resize((logo_width, int(logo.height * logo_width / logo.width)))
-            logo_x = (template.width - logo_resized.width) // 2
-            logo_y = 8
-            
-            template.paste(logo_resized, (logo_x, logo_y), logo_resized)
-            template.paste(img, (0, image_y))
-        else:
-            template.paste(img)
+        # Paste gambar di kiri
+        template.paste(img, (0, 0))
     except Exception as e:
         st.error(f"Error loading image: {e}")
 
     return template
 
-# Fungsi untuk menambahkan teks ke gambar
+# Fungsi untuk menambahkan teks ke gambar (di kanan)
 def add_text(template, draw, row, font, selectprice):
     item_code = row['ItemCode']
     item_name = row['ItemName']
     harga_jual = f"Rp. {row[selectprice]:,} / {row['InventoryUoM']}"
     ctn = f"Isi Karton: {int(row['IsiCtn'])} {row['InventoryUoM']}" if pd.notna(row['IsiCtn']) else "N/A"
-    text_y = 870 if row['Kategori'] == 'AKSESORIS RAMBUT KAMINO' else 890 if row['Kategori'] == 'LOLI & MOLI' else 810
+    text_x = 620  # Mulai teks di sisi kanan gambar
+    text_y = 50   # Start posisi teks di atas
 
-    lines_item_code = wrap_text(f"{item_code}", font, template.width - 40)
-    lines_item_name = wrap_text(f"{item_name}", font, template.width - 40)
-    lines_harga_jual = wrap_text(harga_jual, font, template.width - 40)
-    lines_ctn = wrap_text(ctn, font, template.width - 40)
+    lines_item_code = wrap_text(f"{item_code}", font, template.width // 2 - 40)
+    lines_item_name = wrap_text(f"{item_name}", font, template.width // 2 - 40)
+    lines_harga_jual = wrap_text(harga_jual, font, template.width // 2 - 40)
+    lines_ctn = wrap_text(ctn, font, template.width // 2 - 40)
 
     y_offset = text_y
     for line in lines_item_code + lines_item_name + lines_harga_jual + lines_ctn:
-        draw.text((20, y_offset), line, font=font, fill="black")
+        draw.text((text_x, y_offset), line, font=font, fill="black")
         y_offset += 40
 
 # Dictionary untuk mengelompokkan gambar berdasarkan kategori
@@ -133,24 +119,23 @@ for index, row in selected_df.iterrows():
     category_dict[category].append((file_name, buf.getvalue()))
     st.image(buf)
 
+if image_paths:
+    st.image(image_paths[0][1], use_column_width=True)
 
-# if image_paths:
-#     st.image(image_paths[0][1], use_column_width=True)
+# Membuat ZIP file dengan struktur folder berdasarkan kategori
+zip_buffer = BytesIO()
+with zipfile.ZipFile(zip_buffer, "w") as zipf:
+    for category, files in category_dict.items():
+        for file_name, image_data in files:
+            file_path = f"{category}/{file_name}"  # Menyimpan gambar dalam folder kategori
+            zipf.writestr(file_path, image_data)
 
-# # Membuat ZIP file dengan struktur folder berdasarkan kategori
-# zip_buffer = BytesIO()
-# with zipfile.ZipFile(zip_buffer, "w") as zipf:
-#     for category, files in category_dict.items():
-#         for file_name, image_data in files:
-#             file_path = f"{category}/{file_name}"  # Menyimpan gambar dalam folder kategori
-#             zipf.writestr(file_path, image_data)
+zip_buffer.seek(0)
 
-# zip_buffer.seek(0)
-
-# # Tombol download ZIP
-# st.download_button(
-#     label="Download ZIP",
-#     data=zip_buffer,
-#     file_name="Ready_to_Upload.zip",
-#     mime="application/zip"
-# )
+# Tombol download ZIP
+st.download_button(
+    label="Download ZIP",
+    data=zip_buffer,
+    file_name="Ready_to_Upload.zip",
+    mime="application/zip"
+)
