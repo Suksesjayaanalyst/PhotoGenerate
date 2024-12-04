@@ -22,7 +22,7 @@ else:
 
 # Dropdown untuk memilih harga
 selectprice = st.selectbox(
-    "Select", options=['Harga Under', 'HargaJualLusin', 'HargaJualKoli', 'HargaJualSpecial']
+    "Select", options=['Harga Under', 'HargaJualLusin', 'HargaJualSpecial']
 )
 
 # Filter data berdasarkan ItemCode di file pengguna
@@ -49,8 +49,6 @@ if start:
             colour = "white"
         elif selectprice == 'HargaJualLusin':
             colour = "orange"
-        elif selectprice == 'HargaJualKoli':
-            colour = "blue"
         elif selectprice == 'HargaJualSpecial':
             colour = 'green'
         
