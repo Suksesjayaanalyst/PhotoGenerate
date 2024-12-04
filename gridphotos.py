@@ -41,7 +41,8 @@ def wrap_text(text, font, max_width):
 
     for word in words:
         test_line = f"{current_line} {word}".strip()
-        width, _ = font.getsize(test_line)
+        bbox = font.getbbox(test_line)  # Menggunakan getbbox() untuk mendapatkan ukuran
+        width = bbox[2] - bbox[0]  # Ambil lebar dari bounding box
 
         if width <= max_width:
             current_line = test_line
