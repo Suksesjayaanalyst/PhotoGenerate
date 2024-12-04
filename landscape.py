@@ -50,7 +50,7 @@ if start:
         elif selectprice == 'HargaJualLusin':
             colour = (250, 225, 135)  # Oranye
         elif selectprice == 'HargaJualSpecial':
-            colour = (0, 128, 0)  # Hijau
+            colour = (181,220,249)  # Hijau
 
         template = Image.new("RGBA", (1200, 800), colour)  # Menambahkan warna RGB pada background
         try:
