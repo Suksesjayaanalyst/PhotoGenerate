@@ -35,7 +35,8 @@ font = ImageFont.truetype(font_path, size=26)
 # Fungsi membungkus teks agar pas dengan lebar tertentu
 def wrap_text(text, font, max_width):
     # Pembungkusan teks menggunakan textwrap
-    wrapped_text = textwrap.fill(text, width=max_width // font.getsize('a')[0])  # Perhitungan dengan ukuran karakter 'a'
+    wrapped_text = textwrap.fill(text, width=max_width // (font.getbbox('a')[2] - font.getbbox('a')[0]))  # Perhitungan dengan ukuran karakter 'a'
+
     return wrapped_text.splitlines()
 
 def add_image(img_url, row):
@@ -100,7 +101,8 @@ def add_text(template, draw, row, font, selectprice):
     def draw_text_with_background(lines, y_offset):
         for line in lines:
             # Hitung ukuran teks
-            text_width, text_height = draw.textsize(line, font=font)
+            text_width, text_height = draw.textbbox((0, 0), line, font=font)[2:4]  # Menggunakan getbbox() untuk mendapatkan ukuran
+
 
             # Menggambar kotak dengan rounded corners, lebar tetap dan margin tetap
             rect_coords = [
