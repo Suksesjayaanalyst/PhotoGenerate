@@ -4,6 +4,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 from io import BytesIO
 import streamlit as st
 import textwrap
+import zipfile
 
 st.set_page_config("Sukses Jaya - Create Photos")
 
@@ -146,6 +147,8 @@ def add_text(template, draw, row, font, selectprice):
 
 
 
+category_dict = {}
+image_paths = []
 
 for index, row in selected_df.iterrows():
     img_template = add_image(row['Link'], row)
@@ -156,4 +159,30 @@ for index, row in selected_df.iterrows():
     img_template.save(buf, format='PNG')
 
     buf.seek(0)
-    st.image(buf)
+    file_name = f"{row['ItemCode']}.jpg"
+    image_paths.append((file_name, buf.getvalue()))
+    category = row['Kategori']
+    if category not in category_dict:
+        category_dict[category] = []
+    category_dict[category].append((file_name, buf.getvalue()))
+
+if image_paths:
+    st.image(image_paths[0][1], use_column_width=True)
+
+# Membuat ZIP file dengan struktur folder berdasarkan kategori
+zip_buffer = BytesIO()
+with zipfile.ZipFile(zip_buffer, "w") as zipf:
+    for category, files in category_dict.items():
+        for file_name, image_data in files:
+            file_path = f"{category}/{file_name}"  # Menyimpan gambar dalam folder kategori
+            zipf.writestr(file_path, image_data)
+
+zip_buffer.seek(0)
+
+# Tombol download ZIP
+st.download_button(
+    label="Download ZIP",
+    data=zip_buffer,
+    file_name="Ready_to_Upload.zip",
+    mime="application/zip"
+)
