@@ -46,16 +46,13 @@ if start:
 
     def add_image(img_url, row):
         if selectprice == 'Harga Under':
-            colour = "white"
+            colour = (255, 255, 255)  # Putih
         elif selectprice == 'HargaJualLusin':
-            colour = "(250,225,135, 255)"
+            colour = (255, 165, 0)  # Oranye
         elif selectprice == 'HargaJualSpecial':
-            colour = 'green'
-        
+            colour = (0, 128, 0)  # Hijau
 
-
-
-        template = Image.new("RGBA", (1200, 800), colour)
+        template = Image.new("RGBA", (1200, 800), colour)  # Menambahkan warna RGB pada background
         try:
             response = requests.get(img_url)
             img = Image.open(BytesIO(response.content)).convert("RGBA")
@@ -70,7 +67,6 @@ if start:
                 logo = "./Lolimoli Logo-02.png"
                 logo = Image.open(logo).convert("RGBA") 
                 logo = logo.resize((200, 100))
-                
 
             # Resize logo sesuai ukuran
             logo_x = (template.width - logo.width) // 2 + 300  # Posisikan logo di tengah
@@ -80,6 +76,7 @@ if start:
             st.error(f"Error loading image: {e}")
 
         return template
+
 
     def add_text(template, draw, row, font, selectprice):
         item_code = row['ItemCode']
