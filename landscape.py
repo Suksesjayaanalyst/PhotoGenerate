@@ -48,7 +48,7 @@ if start:
         if selectprice == 'Harga Under':
             colour = (255, 255, 255)  # Putih
         elif selectprice == 'HargaJualLusin':
-            colour = (255, 165, 0)  # Oranye
+            colour = (250, 225, 135)  # Oranye
         elif selectprice == 'HargaJualSpecial':
             colour = (0, 128, 0)  # Hijau
 
