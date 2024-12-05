@@ -46,7 +46,7 @@ else:
 
 # Dropdown untuk memilih harga
 selectprice = st.selectbox(
-    "Select", options=['Harga Under', 'HargaJualLusin', 'HargaJualSpecial']
+    "Select", options=['Harga Under', 'HargaLusin', 'HargaSpecial']
 )
 
 
