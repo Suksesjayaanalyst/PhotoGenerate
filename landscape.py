@@ -32,6 +32,9 @@ selected_df = selected_df[selected_df['Link'] != ""]
 
 st.dataframe(selected_df)
 
+st.write("Ini yang gak ada foto:")
+st.dataframe(df_kosong)
+
 start = st.button("Start 1")
 
 start2 = st.button("Start 2")
