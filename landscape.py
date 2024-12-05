@@ -229,6 +229,8 @@ if start2:
 
         try:
             response = requests.get(img_url)
+            if not img_url:
+                st.warning(f"Tidak ada foto {row['ItemCode']}")
             img = Image.open(BytesIO(response.content)).convert("RGBA")
             img = img.resize ((750,750))
             image_x = (template.width - img.width) // 2
