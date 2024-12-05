@@ -27,6 +27,8 @@ selectprice = st.selectbox(
 
 # Filter data berdasarkan ItemCode di file pengguna
 selected_df = database[database['ItemCode'].isin(file_user['ItemCode'])]
+df_kosong = selected_df[selected_df['Link'] == ""]
+selected_df = selected_df[selected_df['Link'] != ""]
 
 st.dataframe(selected_df)
 
@@ -222,7 +224,6 @@ if start2:
 
     
     def add_image(img_url, row):
-        template = None
 
         try:
             template = Image.new("RGBA", (800, 1200), "white")  # Menambahkan warna RGB pada background
@@ -250,8 +251,6 @@ if start2:
 
         except Exception as e:
             st.error(f"Error loadingimage: {e} {row['ItemCode']}")
-
-            return None
 
         return template
     
