@@ -222,15 +222,11 @@ if start2:
 
     
     def add_image(img_url, row):
-        
-
-        template = Image.new("RGBA", (800, 1200), "white")  # Menambahkan warna RGB pada background
-
+        template = None
 
         try:
+            template = Image.new("RGBA", (800, 1200), "white")  # Menambahkan warna RGB pada background
             response = requests.get(img_url)
-            if not img_url:
-                st.warning(f"Tidak ada foto {row['ItemCode']}")
             img = Image.open(BytesIO(response.content)).convert("RGBA")
             img = img.resize ((750,750))
             image_x = (template.width - img.width) // 2
@@ -253,7 +249,9 @@ if start2:
             template.paste(img, (image_x, image_y))
 
         except Exception as e:
-            st.error(f"Error loadingimage: {e}")
+            st.error(f"Error loadingimage: {e} {row['ItemCode']}")
+
+            return None
 
         return template
     
