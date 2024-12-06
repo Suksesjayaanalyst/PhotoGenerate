@@ -153,7 +153,7 @@ if start2:
         current_font = ImageFont.truetype(font_path, size=20)
         font = ImageFont.truetype(font_path, size=20)
         if selectprice == 'Harga Under':
-                colour = (242, 242, 242)  # Putih
+                colour = (255,163,208)  # Pink
         elif selectprice == 'HargaLusin':
             colour = (250, 225, 135)  # Oranye
         elif selectprice == 'HargaSpecial':
@@ -275,7 +275,7 @@ if start2:
             buf.seek(0)
             file_name = f"{row['ItemCode']}.jpg"
             image_paths.append((file_name, buf.getvalue()))
-            category = row['Kategori']
+            category = row['List']
             if category not in category_dict:
                 category_dict[category] = []
             category_dict[category].append((file_name, buf.getvalue()))
